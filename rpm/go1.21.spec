@@ -312,7 +312,7 @@ export GOROOT="%{buildroot}%{_libdir}/go/%{go_label}"
 # find %{_builddir}/go/pkg -name "*.a" -type f |wc -l
 # 259
 # TODO isolate the build step where .a files are created and delete then
-find %{_builddir}/go/pkg -name "*.a" -type f -delete
+find pkg -name "*.a" -type f -delete
 
 # locations for third party libraries, see README-openSUSE for info about locations.
 install -d  %{buildroot}%{_datadir}/go/%{go_label}/contrib
