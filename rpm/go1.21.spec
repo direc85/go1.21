@@ -306,6 +306,7 @@ grep "^race_linux_%{go_arch}.syso built with LLVM %{tsan_commit}" src/runtime/ra
 %endif
 
 %install
+pushd go
 export GOROOT="%{buildroot}%{_libdir}/go/%{go_label}"
 
 # remove pre-compiled .a package archives no longer used as of go1.20
@@ -395,6 +396,8 @@ cp -r CONTRIBUTING.md LICENSE PATENTS README.md README.SUSE %{buildroot}%{_docdi
 cp -r doc/* %{buildroot}%{_docdir}/go/%{go_label}
 
 %fdupes -s %{buildroot}%{_prefix}
+
+popd # end of install
 
 %files
 %{_bindir}/go
