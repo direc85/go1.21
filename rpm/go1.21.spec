@@ -378,8 +378,13 @@ mv misc/wasm/* $GOROOT/misc/wasm
 rm -f %{buildroot}%{_bindir}/{hgpatch,quietgcc}
 
 # gdbinit
-echo "add-auto-load-safe-path /usr/%{_lib}/go/%{go_label}/src/runtime/runtime-gdb.py" > go.gdb
-install -Dm644 go.gdb $GOROOT/bin/gdbinit.d/go.gdb
+mkdir -p $GOROOT/bin/gdbinit.d
+echo "add-auto-load-safe-path /usr/%{_lib}/go/%{go_label}/src/runtime/runtime-gdb.py" > $GOROOT/bin/gdbinit.d/go.gdb
+install -Dm644 $GOROOT/bin/gdbinit.d/go.gdb %{buildroot}%{_sysconfdir}/gdbinit.d/go.gdb
+
+# go, gofmt
+install -Dm755 $GOROOT/bin/go %{buildroot}%{_bindir}/go
+install -m755 $GOROOT/bin/gofmt %{buildroot}%{_bindir}/gofmt
 
 # documentation and examples
 # fix documetation permissions (rpmlint warning)
@@ -404,9 +409,6 @@ popd # end of install
 %{_datadir}/go/%{go_label}
 %dir %{_sysconfdir}/gdbinit.d/
 %config %{_sysconfdir}/gdbinit.d/go.gdb
-%ghost %{_sysconfdir}/alternatives/go
-%ghost %{_sysconfdir}/alternatives/gofmt
-%ghost %{_sysconfdir}/alternatives/go.gdb
 %dir %{_docdir}/go
 %dir %{_docdir}/go/%{go_label}
 %doc %{_docdir}/go/%{go_label}/CONTRIBUTING.md
