@@ -1,0 +1,76 @@
+--- a/src/cmd/dist/buildtool.go
++++ b/src/cmd/dist/buildtool.go
+@@ -219,7 +219,7 @@ func bootstrapBuildTools() {
+ 	// Use the purego build tag to disable other assembly code,
+ 	// such as in cmd/internal/notsha256.
+ 	cmd := []string{
+-		pathf("%s/bin/go", goroot_bootstrap),
++		pathf("%s/bin/go.gcc", goroot_bootstrap),
+ 		"install",
+ 		"-tags=math_big_pure_go compiler_bootstrap purego",
+ 	}
+diff --git a/src/make.bash b/src/make.bash
+index 755b3b0b9e..6e80d33720 100755
+--- a/src/make.bash
++++ b/src/make.bash
+@@ -179,15 +179,15 @@ IFS=$'\n'; for go_exe in $(type -ap go); do
+ 		fi
+ 	fi
+ done; unset IFS
+-if [ ! -x "$GOROOT_BOOTSTRAP/bin/go" ]; then
+-	echo "ERROR: Cannot find $GOROOT_BOOTSTRAP/bin/go." >&2
++if [ ! -x "$GOROOT_BOOTSTRAP/bin/go.gcc" ]; then
++	echo "ERROR: Cannot find $GOROOT_BOOTSTRAP/bin/go.gcc." >&2
+ 	echo "Set \$GOROOT_BOOTSTRAP to a working Go tree >= Go $bootgo." >&2
+ 	exit 1
+ fi
+ # Get the exact bootstrap toolchain version to help with debugging.
+ # We clear GOOS and GOARCH to avoid an ominous but harmless warning if
+ # the bootstrap doesn't support them.
+-GOROOT_BOOTSTRAP_VERSION=$(nogoenv "$GOROOT_BOOTSTRAP/bin/go" version | sed 's/go version //')
++GOROOT_BOOTSTRAP_VERSION=$(nogoenv "$GOROOT_BOOTSTRAP/bin/go.gcc" version | sed 's/go version //')
+ echo "Building Go cmd/dist using $GOROOT_BOOTSTRAP. ($GOROOT_BOOTSTRAP_VERSION)"
+ if $verbose; then
+ 	echo cmd/dist
+@@ -198,7 +198,7 @@ if [ "$GOROOT_BOOTSTRAP" = "$GOROOT" ]; then
+ 	exit 1
+ fi
+ rm -f cmd/dist/dist
+-GOROOT="$GOROOT_BOOTSTRAP" nogoenv "$GOROOT_BOOTSTRAP/bin/go" build -o cmd/dist/dist ./cmd/dist
++GOROOT="$GOROOT_BOOTSTRAP" nogoenv "$GOROOT_BOOTSTRAP/bin/go.gcc" build -o cmd/dist/dist ./cmd/dist
+ 
+ # -e doesn't propagate out of eval, so check success by hand.
+ eval $(./cmd/dist/dist env -p || echo FAIL=true)
+diff --git a/src/make.rc b/src/make.rc
+index 834c1f1ba6..4a93716069 100755
+--- a/src/make.rc
++++ b/src/make.rc
+@@ -62,7 +62,7 @@ if(! ~ $#GOROOT_BOOTSTRAP 1){
+ 			GOROOT_BOOTSTRAP = $home/$d
+ }
+ for(p in $path){
+-	if(! test -x $GOROOT_BOOTSTRAP/bin/go){
++	if(! test -x $GOROOT_BOOTSTRAP/bin/go.gcc){
+ 		if(go_exe = `{path=$p whatis go}){
+ 			goroot = `{GOROOT=() nogoenv $go_exe env GOROOT}
+ 			if(! ~ $goroot $GOROOT){
+@@ -75,8 +75,8 @@ for(p in $path){
+ 		}
+ 	}
+ }
+-if(! test -x $GOROOT_BOOTSTRAP/bin/go){
+-	echo 'ERROR: Cannot find '$GOROOT_BOOTSTRAP'/bin/go.' >[1=2]
++if(! test -x $GOROOT_BOOTSTRAP/bin/go.gcc){
++	echo 'ERROR: Cannot find '$GOROOT_BOOTSTRAP'/bin/go.gcc.' >[1=2]
+ 	echo 'Set $GOROOT_BOOTSTRAP to a working Go tree >= Go '$bootgo'.' >[1=2]
+ 	exit bootstrap
+ }
+@@ -93,7 +93,7 @@ GOROOT_BOOTSTRAP_VERSION=`{nogoenv $GOROOT_BOOTSTRAP/bin/go version | sed 's/go
+ echo 'Building Go cmd/dist using '$GOROOT_BOOTSTRAP'. ('$"GOROOT_BOOTSTRAP_VERSION')'
+ if(~ $#vflag 1)
+ 	echo cmd/dist
+-GOROOT=$GOROOT_BOOTSTRAP nogoenv $GOROOT_BOOTSTRAP/bin/go build -o cmd/dist/dist ./cmd/dist
++GOROOT=$GOROOT_BOOTSTRAP nogoenv $GOROOT_BOOTSTRAP/bin/go.gcc build -o cmd/dist/dist ./cmd/dist
+ 
+ eval `{./cmd/dist/dist env -9}
+ if(~ $#vflag 1)
