@@ -388,7 +388,7 @@ find doc/ misc/ -type f -exec chmod 0644 '{}' +
 rm -rf misc/cgo/test/{_*,*.o,*.out,*.6,*.8}
 # prepare go-doc
 mkdir -p %{buildroot}%{_docdir}/go/%{go_label}
-cp -r CONTRIBUTING.md LICENSE PATENTS README.md README.SUSE %{buildroot}%{_docdir}/go/%{go_label}
+cp -r CONTRIBUTING.md LICENSE PATENTS README.md %{buildroot}%{_docdir}/go/%{go_label}
 cp -r doc/* %{buildroot}%{_docdir}/go/%{go_label}
 
 %fdupes -s %{buildroot}%{_prefix}
@@ -412,7 +412,6 @@ popd # end of install
 %doc %{_docdir}/go/%{go_label}/CONTRIBUTING.md
 %doc %{_docdir}/go/%{go_label}/PATENTS
 %doc %{_docdir}/go/%{go_label}/README.md
-%doc %{_docdir}/go/%{go_label}/README.SUSE
 %if 0%{?suse_version} < 1500
 %doc %{_docdir}/go/%{go_label}/LICENSE
 %else
