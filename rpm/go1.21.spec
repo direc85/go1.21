@@ -105,7 +105,6 @@ Group:          Development/Languages/Go
 URL:            https://github.com/sailfishos-mirror/go/
 Source:         %{name}-%{version}.tar.xz
 Source1:        go-rpmlintrc
-Source6:        go.gdbinit
 # For cases where go.env isn't available/created. From Go 1.21 binary rpm.
 Source7:        go.env
 # We have to compile TSAN ourselves. boo#1052528
@@ -379,11 +378,8 @@ mv misc/wasm/* $GOROOT/misc/wasm
 rm -f %{buildroot}%{_bindir}/{hgpatch,quietgcc}
 
 # gdbinit
-install -Dm644 %{SOURCE6} $GOROOT/bin/gdbinit.d/go.gdb
-%if "%{_lib}" == "lib64"
-sed -i "s/lib/lib64/" $GOROOT/bin/gdbinit.d/go.gdb
-sed -i "s/\$go_label/%{go_label}/" $GOROOT/bin/gdbinit.d/go.gdb
-%endif
+echo "add-auto-load-safe-path /usr/%{_lib}/go/%{go_label}/src/runtime/runtime-gdb.py" > go.gdb
+install -Dm644 go.gdb $GOROOT/bin/gdbinit.d/go.gdb
 
 # documentation and examples
 # fix documetation permissions (rpmlint warning)
