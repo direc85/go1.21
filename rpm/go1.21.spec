@@ -252,6 +252,12 @@ export GOARM=6
 export GOARCH=arm
 export GOARM=7
 %endif
+%ifarch aarch64
+export GOARCH=arm64
+%endif
+%ifarch %ix86
+export GOARCH=386
+%endif
 %ifarch x86_64 %{?x86_64}
 # use the baseline defined above. Other option is GOAMD64=v3 for x86_64_v3 support
 export GOAMD64=%go_amd64
