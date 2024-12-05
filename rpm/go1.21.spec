@@ -233,8 +233,8 @@ find . -type f -name '*.syso' -print -delete
 TSAN_DIR="../llvm-%{tsan_commit}/compiler-rt/lib/tsan/go"
 pushd "$TSAN_DIR"
 ./buildgo.sh
-popd
 cp -v "$TSAN_DIR/race_linux_%{go_arch}.syso" src/runtime/race/
+popd
 %endif
 
 # Now, compile Go.
@@ -269,11 +269,13 @@ mkdir -p "$GOBIN"
 cd go/src
 HOST_EXTRA_CFLAGS="%{optflags} -Wno-error" taskset 0x1 ./make.bash -v
 
-cd ../../
+cd ../
 %ifarch %{tsan_arch}
 # Install TSAN-friendly version of the std libraries.
+pwd
 bin/go install -race std
 %endif
+cd ../
 
 %if %{with_shared}
 %if 0%{?suse_version} > 1500
@@ -304,9 +306,9 @@ bin/go install -buildmode=shared std
 # includes path prefix and omits arch in filename e.g.
 # internal/amd64v1/race_linux.syso
 %ifarch x86_64 %{?x86_64}
-grep "^internal/amd64%{go_amd64}/race_linux.syso built with LLVM %{tsan_commit}" src/runtime/race/README
+grep "^internal/amd64%{go_amd64}/race_linux.syso built with LLVM %{tsan_commit}" go/src/runtime/race/README
 %else
-grep "^race_linux_%{go_arch}.syso built with LLVM %{tsan_commit}" src/runtime/race/README
+grep "^race_linux_%{go_arch}.syso built with LLVM %{tsan_commit}" go/src/runtime/race/README
 %endif
 %endif
 
