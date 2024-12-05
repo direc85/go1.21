@@ -260,6 +260,7 @@ export GOARCH=386
 %endif
 %ifarch x86_64 %{?x86_64}
 # use the baseline defined above. Other option is GOAMD64=v3 for x86_64_v3 support
+export GOARCH=amd64
 export GOAMD64=%go_amd64
 %endif
 export GOROOT="`pwd`"/go
@@ -320,7 +321,7 @@ export GOROOT="%{buildroot}%{_libdir}/go/%{go_label}"
 # find %{_builddir}/go/pkg -name "*.a" -type f |wc -l
 # 259
 # TODO isolate the build step where .a files are created and delete then
-find pkg -name "*.a" -type f -delete
+find pkg -name "*.a" -type f -print -delete || :
 
 # locations for third party libraries, see README-openSUSE for info about locations.
 install -d  %{buildroot}%{_datadir}/go/%{go_label}/contrib
