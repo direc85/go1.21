@@ -12,9 +12,6 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via https://bugs.opensuse.org/
-#
-
 %define gcc_go_version 13
 %define go_bootstrap_version go1.18
 
@@ -24,7 +21,6 @@
 
 # Build go-race only on platforms where C++14 is supported (SLE-15)
 %define tsan_arch x86_64 aarch64 s390x ppc64le
-#%%define tsan_arch openSUSE_FAKE_ARCH
 
 # Go has precompiled versions of LLVM's compiler-rt inside their source code.
 # We cannot ship pre-compiled binaries so we have to recompile said source,
@@ -52,7 +48,6 @@
 %define go_label %{go_api}
 
 # shared library support
-%if "%{rpm_vercmp %{go_api} 1.5}" > "0"
 %if %{with gccgo}
 %define with_shared 1
 %else
@@ -61,9 +56,6 @@
 %else
 %define with_shared 0
 %endif
-%endif
-%else
-%define with_shared 0
 %endif
 %ifarch ppc64
 %define with_shared 0
@@ -82,18 +74,6 @@
 %endif
 %ifarch %arm
 %define go_arch arm
-%endif
-%ifarch ppc64
-%define go_arch ppc64
-%endif
-%ifarch ppc64le
-%define go_arch ppc64le
-%endif
-%ifarch s390x
-%define go_arch s390x
-%endif
-%ifarch riscv64
-%define go_arch riscv64
 %endif
 
 Name:           go1.21
@@ -146,7 +126,7 @@ Obsoletes:      go-devel < go%{version}
 # go-vim/emacs were separate projects starting from 1.4
 Obsoletes:      go-emacs <= 1.3.3
 Obsoletes:      go-vim <= 1.3.3
-ExclusiveArch:  %ix86 x86_64 %arm aarch64 ppc64 ppc64le s390x riscv64
+ExclusiveArch:  %ix86 x86_64 %arm aarch64
 
 %description
 Go is an expressive, concurrent, garbage collected systems programming language
@@ -279,7 +259,6 @@ bin/go install -race std
 cd ../
 
 %if %{with_shared}
-%if 0%{?suse_version} > 1500
 # openSUSE Tumbleweed
 # Compile Go standard library as a dynamically loaded shared object libstd.so
 # for inclusion in a subpackage which can be installed standalone.
@@ -297,7 +276,6 @@ cd ../
 #    build code that will be linked against shared libraries previously
 #    created with -buildmode=shared.
 bin/go install -buildmode=shared std
-%endif
 %endif
 
 %check
@@ -417,11 +395,7 @@ popd # end of install
 %doc %{_docdir}/go/%{go_label}/CONTRIBUTING.md
 %doc %{_docdir}/go/%{go_label}/PATENTS
 %doc %{_docdir}/go/%{go_label}/README.md
-%if 0%{?suse_version} < 1500
-%doc %{_docdir}/go/%{go_label}/LICENSE
-%else
 %license %{_docdir}/go/%{go_label}/LICENSE
-%endif
 
 # We don't include TSAN in the main Go package.
 %ifarch %{tsan_arch}
@@ -430,11 +404,8 @@ popd # end of install
 
 # We don't include libstd.so in the main Go package.
 %if %{with_shared}
-%if 0%{?suse_version} > 1500
-# openSUSE Tumbleweed
 # ./go/1.21/pkg/linux_amd64_dynlink/libstd.so
 %exclude %{_libdir}/go/%{go_label}/pkg/linux_%{go_arch}_dynlink/libstd.so
-%endif
 %endif
 
 %files doc
@@ -448,11 +419,8 @@ popd # end of install
 %endif
 
 %if %{with_shared}
-%if 0%{?suse_version} > 1500
-# openSUSE Tumbleweed
 %files libstd
 %{_libdir}/go/%{go_label}/pkg/linux_%{go_arch}_dynlink/libstd.so
-%endif
 %endif
 
 %changelog
