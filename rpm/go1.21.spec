@@ -190,17 +190,6 @@ popd
 
 %build
 
-# FIXME: perhaps these should be patched in?
-# See also .gitignore
-export GOTMPDIR=${TMPDIR:-$(realpath ".tmp-go")}
-mkdir -p $GOTMPDIR
-
-export GOCACHE=${TMPDIR:-$(realpath ".tmp-gocache")}
-mkdir -p $GOCACHE
-
-export TMPDIR=${TMPDIR:-$(realpath ".tmp")}
-mkdir -p $TMPDIR
-
 # Remove the pre-included .sysos, to avoid shipping things we didn't compile
 # (which is against the openSUSE guidelines for packaging).
 find . -type f -name '*.syso' -print -delete
