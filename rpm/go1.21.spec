@@ -246,7 +246,6 @@ cd ../
 pwd
 bin/go install -race std
 %endif
-cd ../
 
 %if %{with_shared}
 # openSUSE Tumbleweed
@@ -267,6 +266,7 @@ cd ../
 #    created with -buildmode=shared.
 bin/go install -buildmode=shared std
 %endif
+cd ../
 
 %check
 %ifarch %{tsan_arch}
