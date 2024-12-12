@@ -85,8 +85,6 @@ Group:          Development/Languages/Go
 URL:            https://github.com/sailfishos-mirror/go/
 Source:         %{name}-%{version}.tar.xz
 Source1:        go-rpmlintrc
-# For cases where go.env isn't available/created. From Go 1.21 binary rpm.
-Source7:        go.env
 # We have to compile TSAN ourselves. boo#1052528
 # Preferred form when all arches share llvm race version
 # Source100:      llvm-%%{tsan_commit}.tar.xz
@@ -304,11 +302,7 @@ install -d  %{buildroot}%{_datadir}/go/%{go_label}/contrib/src
 ln -s %{_datadir}/go/%{go_label}/contrib/src/ %{buildroot}%{_libdir}/go/%{go_label}/contrib/src
 
 # go.env sets defaults for: GOPROXY GOSUMDB GOTOOLCHAIN
-if [ -f go.env ]; then
-  install -Dm644 go.env $GOROOT/
-else
-  install -Dm644 %{SOURCE7} $GOROOT/
-fi
+install -Dm644 go.env $GOROOT/
 
 # Change go.env GOTOOLCHAIN default to "local" so Go app builds never
 # automatically download newer toolchains as specified by go.mod files.
