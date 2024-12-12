@@ -12,6 +12,9 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
+# Ignore missing build-id links for now
+%global _missing_build_ids_terminate_build 0
+
 %define gcc_go_version 13
 %define go_bootstrap_version go1.18
 
