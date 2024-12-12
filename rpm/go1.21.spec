@@ -282,6 +282,12 @@ grep "^race_linux_%{go_arch}.syso built with LLVM %{tsan_commit}" go/src/runtime
 pushd go
 export GOROOT="%{buildroot}%{_libdir}/go/%{go_label}"
 
+# remove pre-compiled .a package archives no longer used as of go1.20
+# find %{_builddir}/go/pkg -name "*.a" -type f |wc -l
+# 259
+# TODO isolate the build step where .a files are created and delete then
+find pkg -name "*.a" -type f -print -delete || :
+
 # locations for third party libraries, see README-openSUSE for info about locations.
 install -d  %{buildroot}%{_datadir}/go/%{go_label}/contrib
 install -d  $GOROOT/contrib/pkg/linux_%{go_arch}
