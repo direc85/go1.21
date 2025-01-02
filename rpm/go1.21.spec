@@ -249,7 +249,7 @@ cd ../
 %ifarch %{tsan_arch}
 # Install TSAN-friendly version of the std libraries.
 pwd
-bin/go install -race std
+bin/go install -v -x -race std
 %endif
 
 %if %{with_shared}
@@ -269,7 +269,7 @@ bin/go install -race std
 # -linkshared
 #    build code that will be linked against shared libraries previously
 #    created with -buildmode=shared.
-bin/go install -buildmode=shared std
+bin/go install -v -x -buildmode=shared std
 %endif
 cd ../
 
