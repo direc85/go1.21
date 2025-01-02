@@ -207,8 +207,9 @@ TSAN_DIR="../llvm-%{tsan_commit}/compiler-rt/lib/tsan/go"
 pushd "$TSAN_DIR"
 export LDFLAGS="$LDFLAGS -lstdc++"
 ./buildgo.sh
-cp -v "$TSAN_DIR/race_linux_%{go_arch}.syso" src/runtime/race/
+SYSO=`realpath "race_linux_%{go_arch}.syso"`
 popd
+cp -v $SYSO go/src/runtime/race/
 %endif
 
 # Now, compile Go.
