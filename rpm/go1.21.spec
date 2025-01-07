@@ -200,6 +200,15 @@ popd
 # (which is against the openSUSE guidelines for packaging).
 find . -type f -name '*.syso' -print -delete
 
+mkdir -p ".tmp-go"
+export GOTMPDIR=${TMPDIR:-$(realpath ".tmp-go")}
+
+mkdir -p ".tmp-gocache"
+export GOCACHE=${TMPDIR:-$(realpath ".tmp-gocache")}
+
+mkdir -p ".tmp"
+export TMPDIR=${TMPDIR:-$(realpath ".tmp")}
+
 # First, compile LLVM's TSAN, and replace the built-in with it. We can only do
 # this for amd64.
 %ifarch %{tsan_arch}
