@@ -22,9 +22,6 @@
 # To bootstrap using go, use '--without gccgo'
 %bcond_without gccgo
 
-# Build shared binaries by default
-%bcond_without with_shared
-
 # Build go-race only on platforms where C++14 is supported (SLE-15)
 %define tsan_arch x86_64 aarch64 s390x ppc64le
 
